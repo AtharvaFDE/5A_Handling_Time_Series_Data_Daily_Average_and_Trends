@@ -65,107 +65,100 @@ This project follows an end-to-end data analytics pipeline, starting from sales 
 ### 🚀 End-to-End Sales Analytics Pipeline
 
 ```mermaid
-flowchart TD
+flowchart LR
 
-    %% DATA SOURCE
-    A(["🚀 START: Sales Data Pipeline"])
-    B[("🗄️ MySQL Database<br/>60 Sales Transactions")]
+    A(["🚀 START"])
 
-    %% SQL PROCESSING
-    C["📥 Data Extraction<br/>SELECT, WHERE, ORDER BY"]
-    D["🧹 Data Aggregation<br/>GROUP BY, SUM(), AVG()"]
-    E["📊 Time-Series Analysis<br/>LAG(), LEAD(), OVER()"]
-    F["📈 Calculate Sales Metrics<br/>Growth %, Moving Averages"]
+    subgraph DB["🗄️ DATABASE LAYER"]
+        direction TB
+        B[("MySQL Database<br/>60 Sales Transactions")]
+        C["Extract Sales Data"]
+        B --> C
+    end
 
-    %% PYTHON CONNECTION
-    G["🐍 Python + Jupyter Notebook<br/>SQLAlchemy + PyMySQL"]
-    H["📦 Load Data into Pandas<br/>DataFrame"]
+    subgraph SQL["📊 SQL ANALYSIS"]
+        direction TB
+        D["GROUP BY<br/>Daily Aggregation"]
+        E["AVG() and SUM()<br/>Daily Sales Metrics"]
+        F["LAG() and LEAD()<br/>Period Comparison"]
+        G["Moving Averages<br/>3-Day and 7-Day"]
+        D --> E --> F --> G
+    end
 
-    %% DATA PROCESSING
-    I["⚙️ Data Preparation<br/>Datetime Conversion"]
-    J["🔍 Feature Engineering<br/>shift(), rolling(), groupby()"]
+    subgraph PY["🐍 PYTHON PROCESSING"]
+        direction TB
+        H["Jupyter Notebook<br/>SQLAlchemy + PyMySQL"]
+        I["Pandas DataFrame<br/>Data Extraction"]
+        J["Data Preparation<br/>Datetime Conversion"]
+        K["shift() and rolling()<br/>Feature Engineering"]
+        H --> I --> J --> K
+    end
 
-    %% ANALYSIS
-    K{"📊 Sales Trend Analysis"}
+    subgraph ANALYSIS["📈 SALES TREND ANALYSIS"]
+        direction TB
+        L{"Sales Trend?"}
+        M["🟢 Increasing"]
+        N["🔴 Decreasing"]
+        O["🟡 Stable"]
+        L --> M
+        L --> N
+        L --> O
+    end
 
-    L["🟢 Increasing Sales"]
-    M["🔴 Decreasing Sales"]
-    N["🟡 Stable Sales"]
+    subgraph OUTPUT["📉 VISUALIZATION & OUTPUT"]
+        direction TB
+        P["Matplotlib Charts"]
+        Q["Sales Trends & Growth"]
+        R["CSV Export"]
+        S(["🎯 Final Sales Insights"])
+        P --> Q --> R --> S
+    end
 
-    %% VISUALIZATION
-    O["📉 Matplotlib Visualizations<br/>Daily Sales Trends"]
-    P["📈 Moving Average Charts<br/>3-Day & 7-Day"]
-    Q["📊 Growth Analysis<br/>Percentage Comparison"]
-
-    %% OUTPUT
-    R[("📁 Export Results<br/>CSV File")]
-    S(["🎯 FINAL RESULT<br/>Sales Trend Analysis"])
-
-    %% FLOW
     A --> B
-    B --> C
     C --> D
-    D --> E
-    E --> F
-    F --> G
     G --> H
-    H --> I
-    I --> J
-    J --> K
-
-    K -->|Positive Growth| L
-    K -->|Negative Growth| M
-    K -->|No Change| N
-
-    L --> O
-    M --> O
-    N --> O
-
+    K --> L
+    M --> P
+    N --> P
     O --> P
-    P --> Q
-    Q --> R
-    R --> S
 
-    %% CLICKABLE DOCUMENTATION LINKS
-    click B "https://dev.mysql.com/doc/" "Explore MySQL Documentation"
-    click G "https://docs.python.org/3/" "Explore Python Documentation"
-    click H "https://pandas.pydata.org/docs/" "Explore Pandas Documentation"
-    click O "https://matplotlib.org/stable/" "Explore Matplotlib Documentation"
+    click B "https://dev.mysql.com/doc/" "MySQL Documentation"
+    click H "https://docs.python.org/3/" "Python Documentation"
+    click I "https://pandas.pydata.org/docs/" "Pandas Documentation"
+    click P "https://matplotlib.org/stable/" "Matplotlib Documentation"
 
-    %% STYLING
-    classDef start fill:#172554,stroke:#3b82f6,color:#ffffff,stroke-width:2px
-    classDef database fill:#0c1a35,stroke:#3b82f6,color:#ffffff,stroke-width:2px
-    classDef sql fill:#10233e,stroke:#60a5fa,color:#ffffff
-    classDef python fill:#052e16,stroke:#22c55e,color:#ffffff
-    classDef decision fill:#422006,stroke:#f59e0b,color:#ffffff
-    classDef positive fill:#052e16,stroke:#22c55e,color:#ffffff
-    classDef negative fill:#450a0a,stroke:#ef4444,color:#ffffff
-    classDef stable fill:#422006,stroke:#eab308,color:#ffffff
-    classDef visualization fill:#2e1065,stroke:#a855f7,color:#ffffff
-    classDef output fill:#164e63,stroke:#06b6d4,color:#ffffff,stroke-width:2px
-    classDef finish fill:#064e3b,stroke:#10b981,color:#ffffff,stroke-width:3px
+    classDef start fill:#172554,stroke:#3b82f6,color:#fff
+    classDef database fill:#0c1a35,stroke:#3b82f6,color:#fff
+    classDef sql fill:#10233e,stroke:#60a5fa,color:#fff
+    classDef python fill:#052e16,stroke:#22c55e,color:#fff
+    classDef decision fill:#422006,stroke:#f59e0b,color:#fff
+    classDef positive fill:#052e16,stroke:#22c55e,color:#fff
+    classDef negative fill:#450a0a,stroke:#ef4444,color:#fff
+    classDef stable fill:#422006,stroke:#eab308,color:#fff
+    classDef output fill:#2e1065,stroke:#a855f7,color:#fff
+    classDef finish fill:#064e3b,stroke:#10b981,color:#fff
 
     class A start
     class B database
-    class C,D,E,F sql
-    class G,H,I,J python
-    class K decision
-    class L positive
-    class M negative
-    class N stable
-    class O,P,Q visualization
-    class R output
+    class C,D,E,F,G sql
+    class H,I,J,K python
+    class L decision
+    class M positive
+    class N negative
+    class O stable
+    class P,Q,R output
     class S finish
 ```
 
 ### Workflow Explanation
 
-1. **MySQL Database:** Stores sales transactions in a structured database.
-2. **SQL Queries:** Extracts sales information and performs calculations using aggregate and window functions.
-3. **Python + Jupyter Notebook:** Connects Python to MySQL and retrieves sales records.
-4. **Pandas Data Analysis:** Performs grouping, previous-day comparisons, moving averages, and growth calculations.
-5. **Matplotlib Visualizations:** Creates graphs to understand sales trends and patterns.
-6. **Final Result:** Generates sales trend analysis and exports the results into a CSV file.
+| Stage | Description |
+|---|---|
+| Database Layer | Stores sales transactions in MySQL. |
+| SQL Analysis | Extracts, aggregates, and compares sales using SQL functions. |
+| Python Processing | Connects Python to MySQL and loads data into Pandas. |
+| Sales Trend Analysis | Identifies increasing, decreasing, and stable sales patterns. |
+| Visualization & Output | Creates charts and exports analytical results to CSV. |
 
 ## 🗄️ MySQL Implementation
 
