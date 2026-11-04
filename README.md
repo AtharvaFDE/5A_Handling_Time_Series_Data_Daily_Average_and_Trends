@@ -31,6 +31,59 @@ The project also uses Python libraries such as Pandas and Matplotlib to perform 
 | SQLAlchemy | Database connectivity |
 | PyMySQL | MySQL connection with Python |
 
+## 📂 Project Structure
+
+```text
+5A_Handling_Time_Series_Data_Daily_Average_and_Trends/
+│
+├── README.md
+├── requirements.txt
+│
+├── SQL/
+│   └── sales_analysis.sql
+│
+├── Python/
+│   └── sales_time_series_analysis.ipynb
+│
+└── Output/
+    └── daily_sales_analysis.csv
+```
+
+## 🔄 Project Workflow
+
+The following diagram illustrates the complete workflow, from storing sales transactions in MySQL to generating sales trend visualizations using Python.
+
+```mermaid
+flowchart TD
+    A[("MySQL Database<br/>Stores 60 sales transactions")]
+    B["SQL Queries<br/>AVG, SUM, GROUP BY, LAG, LEAD"]
+    C["Python + Jupyter Notebook<br/>Connect using SQLAlchemy and PyMySQL"]
+    D["Pandas Data Analysis<br/>Group, shift, rolling averages, growth"]
+    E["Matplotlib Visualizations<br/>Sales trends, moving averages, growth charts"]
+    F(["Final Result: Sales Trend Analysis"])
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+
+    style A fill:#0b1424,stroke:#3b82f6,color:#ffffff
+    style B fill:#0b1424,stroke:#3b82f6,color:#ffffff
+    style C fill:#071b12,stroke:#16a34a,color:#ffffff
+    style D fill:#071b12,stroke:#16a34a,color:#ffffff
+    style E fill:#170d20,stroke:#a855f7,color:#ffffff
+    style F fill:#052e16,stroke:#16a34a,color:#ffffff
+```
+
+### Workflow Explanation
+
+1. **MySQL Database:** Stores sales transactions in a structured database.
+2. **SQL Queries:** Extracts sales information and performs calculations using aggregate and window functions.
+3. **Python + Jupyter Notebook:** Connects Python to MySQL and retrieves sales records.
+4. **Pandas Data Analysis:** Performs grouping, previous-day comparisons, moving averages, and growth calculations.
+5. **Matplotlib Visualizations:** Creates graphs to understand sales trends and patterns.
+6. **Final Result:** Generates meaningful sales trend analysis and exports the results.
 
 ## 🗄️ MySQL Implementation
 
@@ -148,6 +201,8 @@ FROM daily_sales;
 
 ### 7. Compare Future Sales Using LEAD()
 
+Use `LEAD()` to retrieve the next available day's sales.
+
 ```sql
 WITH daily_sales AS (
     SELECT
@@ -255,9 +310,23 @@ daily_summary["growth_percentage"] = (
     )
     / daily_summary["previous_day_sales"].replace(0, float("nan"))
 ) * 100
+
+daily_summary["growth_percentage"] = (
+    daily_summary["growth_percentage"].round(2)
+)
 ```
 
-### 9. Calculate Moving Averages
+### 9. Calculate Next Day Sales
+
+Use `shift(-1)` to retrieve the next available day's sales.
+
+```python
+daily_summary["next_day_sales"] = (
+    daily_summary["daily_total_sales"].shift(-1)
+)
+```
+
+### 10. Calculate Moving Averages
 
 ```python
 daily_summary["moving_average_3_days"] = (
@@ -273,7 +342,7 @@ daily_summary["moving_average_7_days"] = (
 )
 ```
 
-### 10. Visualize Sales Trends
+### 11. Visualize Sales Trends
 
 ```python
 plt.figure(figsize=(12, 6))
@@ -308,6 +377,17 @@ plt.tight_layout()
 plt.show()
 ```
 
+### 12. Export Analysis Results to CSV
+
+```python
+daily_summary.to_csv(
+    "daily_sales_analysis.csv",
+    index=False
+)
+
+print("Analysis exported successfully!")
+```
+
 ## 📚 SQL Concepts Covered
 
 | SQL Function | Description |
@@ -338,6 +418,7 @@ After completing this project, I learned how to:
 - Connect MySQL with Python.
 - Analyze datasets using Pandas.
 - Create time-series visualizations using Matplotlib.
+- Export analytical results into CSV files.
 
 ## 🚀 How to Run This Project
 
@@ -346,10 +427,11 @@ After completing this project, I learned how to:
 3. Create the sales table and insert sample data.
 4. Execute the SQL queries in MySQL Workbench.
 5. Install Python and Jupyter Notebook.
-6. Install the required Python libraries.
+6. Install the required Python libraries using `requirements.txt`.
 7. Update your MySQL connection credentials.
 8. Run the Jupyter Notebook cells sequentially.
 9. Explore the resulting sales analysis and visualizations.
+10. Export the final analysis into a CSV file.
 
 ## 👨‍💻 Author
 
